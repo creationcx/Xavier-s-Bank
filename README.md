@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小大人的理財撲滿</title>
+    <title>噗噗的理財撲滿</title>
     <style>
         :root {
             --bg-color: #FFF8E7;
@@ -38,7 +38,7 @@
 </head>
 <body>
 
-    <h1>🎈 小大人的理財撲滿 🎈</h1>
+    <h1>🎈 噗噗的理財撲滿 🎈</h1>
 
     <div class="banks-container">
         <div class="piggy-bank spend">
