@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +5,6 @@
     <title>噗噗的理財撲滿</title>
     <style>
         :root {
-            /* 主題配色：奶茶與玫瑰粉 */
             --bg-color: #F7EBE8; 
             --text-color: #6B5B5A; 
             --btn-color: #D9A0A7; 
@@ -39,6 +37,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative; /* 為了讓金幣能準確定位 */
         }
 
         .piggy-bank.spend { border-color: var(--spend-color); }
@@ -94,6 +93,16 @@
         .alloc-input { width: 40px; }
         .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; }
 
+        /* 金幣掉落動畫元素 */
+        .falling-coin {
+            position: fixed;
+            font-size: 35px;
+            z-index: 1000;
+            top: -50px;
+            transition: top 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.8s;
+            pointer-events: none;
+        }
+
         @media (max-width: 400px) {
             .bank-icon { font-size: 2em; }
             .piggy-bank h3 { font-size: 0.9em; }
@@ -104,27 +113,46 @@
 </head>
 <body>
 
-    <h1>🎈 小大人的理財撲滿 🎈</h1>
+    <h1>🎈 噗噗的理財撲滿 🎈</h1>
 
     <div class="banks-container">
-        <div class="piggy-bank spend">
+        <div class="piggy-bank spend" id="bank-spend">
             <div class="bank-icon">🛍️</div>
             <h3>消費帳</h3>
             <div class="amount" id="amt-spend">讀取中</div>
             <div class="coins-container" id="coins-spend"></div>
         </div>
-        <div class="piggy-bank save">
+        <div class="piggy-bank save" id="bank-save">
             <div class="bank-icon">🏦</div>
             <h3>儲蓄帳</h3>
             <div class="amount" id="amt-save">讀取中</div>
             <div class="coins-container" id="coins-save"></div>
             <button id="btn-interest" style="font-size: 0.75em; padding: 5px; margin-top:10px;">月初領息</button>
         </div>
-        <div class="piggy-bank invest">
+        <div class="piggy-bank invest" id="bank-invest">
             <div class="bank-icon">📈</div>
             <h3>投資帳</h3>
             <div class="amount" id="amt-invest">讀取中</div>
             <div class="coins-container" id="coins-invest"></div>
+        </div>
+    </div>
+
+    <div class="action-panel">
+        <h2>💰 發零用錢 (15元)</h2>
+        <div class="input-group">
+            🛍️ <input type="number" id="alloc-spend" class="alloc-input" min="0" max="15" value="5">
+            🏦 <input type="number" id="alloc-save" class="alloc-input" min="0" max="15" value="5">
+            📈 <input type="number" id="alloc-invest" class="alloc-input" min="0" max="15" value="5">
+        </div>
+        <button id="btn-deposit" style="background-color: var(--invest-color);">家長確認存入</button>
+    </div>
+
+    <div class="action-panel">
+        <h2>🎲 每週六投資挑戰</h2>
+        <div>
+            <div class="dice-emoji" id="dice-display">🎲</div><br>
+            <button id="roll-btn">擲骰子</button>
+            <div id="dice-result" style="color: var(--highlight-color); font-weight: bold; margin-top: 5px;"></div>
         </div>
     </div>
 
@@ -146,25 +174,6 @@
             金額: <input type="number" id="transfer-amt" min="1" style="width: 70px;"> 元
         </div>
         <button id="btn-transfer" style="background-color: var(--save-color);">確認轉出</button>
-    </div>
-
-    <div class="action-panel">
-        <h2>🎲 每週六投資挑戰</h2>
-        <div>
-            <div class="dice-emoji" id="dice-display">🎲</div><br>
-            <button id="roll-btn">擲骰子</button>
-            <div id="dice-result" style="color: var(--highlight-color); font-weight: bold; margin-top: 5px;"></div>
-        </div>
-    </div>
-
-    <div class="action-panel">
-        <h2>💰 發零用錢 (15元)</h2>
-        <div class="input-group">
-            🛍️ <input type="number" id="alloc-spend" class="alloc-input" min="0" max="15" value="5">
-            🏦 <input type="number" id="alloc-save" class="alloc-input" min="0" max="15" value="5">
-            📈 <input type="number" id="alloc-invest" class="alloc-input" min="0" max="15" value="5">
-        </div>
-        <button id="btn-deposit" style="background-color: var(--invest-color);">家長確認存入</button>
     </div>
 
     <button class="admin-trigger" id="btn-admin"></button>
@@ -197,6 +206,13 @@
 
         function syncToCloud() {
             set(dbRef, balances);
+        }
+
+        // 判斷是否為每個月的第一個星期六
+        function isFirstSaturday() {
+            const today = new Date();
+            // getDay() 0是日, 1是一... 6是六。 且日期必須在 1~7 號之間
+            return today.getDay() === 6 && today.getDate() <= 7;
         }
 
         function renderCoins(containerId, totalAmount) {
@@ -232,121 +248,31 @@
             renderCoins('coins-invest', balances.invest);
         }
 
-        document.getElementById('btn-transfer').addEventListener('click', () => {
-            const from = document.getElementById('transfer-from').value;
-            const to = document.getElementById('transfer-to').value;
-            const amt = parseInt(document.getElementById('transfer-amt').value) || 0;
-
-            if (from === to) {
-                alert("同一個罐子不能互轉喔！");
-                return;
-            }
-            if (amt <= 0) {
-                alert("轉帳金額必須大於 0 元！");
-                return;
-            }
-            if (balances[from] < amt) {
-                alert("那個罐子裡的錢不夠轉出喔！");
-                return;
-            }
-
-            balances[from] -= amt;
-            balances[to] += amt;
-            alert(`成功將 ${amt} 元轉移！`);
-            syncToCloud();
-            document.getElementById('transfer-amt').value = ''; 
-        });
-
-        document.getElementById('roll-btn').addEventListener('click', () => {
-            if (balances.diceRolledThisWeek) {
-                alert("這週已經擲過骰子囉！"); return;
-            }
-            const diceDisplay = document.getElementById('dice-display');
-            const resultText = document.getElementById('dice-result');
-            const rollBtn = document.getElementById('roll-btn');
+        // 存錢動畫邏輯
+        function triggerCoinAnimation(s, sa, i, callback) {
+            const targets = [
+                { val: s, id: 'bank-spend' },
+                { val: sa, id: 'bank-save' },
+                { val: i, id: 'bank-invest' }
+            ];
             
-            diceDisplay.classList.add('spin');
-            rollBtn.disabled = true;
-            resultText.innerText = "轉動中...";
+            let animationsRunning = 0;
 
-            setTimeout(() => {
-                diceDisplay.classList.remove('spin');
-                const roll = Math.floor(Math.random() * 6) + 1;
-                let outcomeMsg = "";
-                let change = 0;
+            targets.forEach(target => {
+                if (target.val > 0) {
+                    animationsRunning++;
+                    const bankElement = document.getElementById(target.id);
+                    const rect = bankElement.getBoundingClientRect();
+                    
+                    const coin = document.createElement('div');
+                    coin.className = 'falling-coin';
+                    coin.innerText = '💰';
+                    // 讓金幣從撲滿的正上方掉下來
+                    coin.style.left = (rect.left + rect.width / 2 - 17) + "px"; 
+                    document.body.appendChild(coin);
 
-                if (roll === 6) { 
-                    diceDisplay.innerText = "🌺"; 
-                    change = -Math.ceil(balances.invest / 5);
-                    outcomeMsg = `遇到食人花！共損失 ${Math.abs(change)} 元。`;
-                } else {
-                    diceDisplay.innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][roll-1];
-                    if (roll === 4) {
-                        change = Math.ceil(balances.invest / 5);
-                        outcomeMsg = `點數 4！共增加 ${change} 元。`;
-                    } else if (roll === 5) {
-                        change = Math.ceil(balances.invest / 2);
-                        outcomeMsg = `點數 5！大豐收，增加 ${change} 元！`;
-                    } else {
-                        outcomeMsg = `點數 ${roll}，本週平平安安。`;
-                    }
-                }
+                    // 觸發重繪以啟動動畫
+                    void coin.offsetWidth; 
 
-                balances.invest += change;
-                if (balances.invest < 0) balances.invest = 0; 
-                
-                balances.diceRolledThisWeek = true;
-                resultText.innerText = outcomeMsg;
-                
-                syncToCloud(); 
-                rollBtn.disabled = false;
-            }, 1000);
-        });
-
-        // 密碼驗證區塊更新為 0215，且不顯示提示文字
-        document.getElementById('btn-interest').addEventListener('click', () => {
-            let password = prompt("請輸入密碼以發放利息:");
-            if (password === "0215") {
-                let interest = Math.ceil(balances.save / 5);
-                balances.save += interest;
-                alert(`發放利息！共獲得 ${interest} 元利息。`);
-                syncToCloud(); 
-            } else if (password !== null) alert("密碼錯誤！");
-        });
-
-        document.getElementById('btn-deposit').addEventListener('click', () => {
-            let s = parseInt(document.getElementById('alloc-spend').value) || 0;
-            let sa = parseInt(document.getElementById('alloc-save').value) || 0;
-            let i = parseInt(document.getElementById('alloc-invest').value) || 0;
-
-            if (s + sa + i !== 15) { alert("總和必須剛好是 15 元喔！"); return; }
-
-            let password = prompt("請輸入家長確認密碼:");
-            if (password === "0215") {
-                balances.spend += s; balances.save += sa; balances.invest += i;
-                balances.diceRolledThisWeek = false; 
-                document.getElementById('dice-display').innerText = "🎲";
-                document.getElementById('dice-result').innerText = "";
-                alert("✨ 存入成功！");
-                syncToCloud(); 
-            } else if (password !== null) alert("密碼錯誤！");
-        });
-
-        document.getElementById('btn-admin').addEventListener('click', () => {
-            let pwd = prompt("進入後台管理，請輸入密碼:");
-            if (pwd === "0215") {
-                let newSpend = prompt("設定 [消費帳] 金額:", balances.spend);
-                let newSave = prompt("設定 [儲蓄帳] 金額:", balances.save);
-                let newInvest = prompt("設定 [投資帳] 金額:", balances.invest);
-                
-                if(newSpend !== null) balances.spend = parseInt(newSpend) || 0;
-                if(newSave !== null) balances.save = parseInt(newSave) || 0;
-                if(newInvest !== null) balances.invest = parseInt(newInvest) || 0;
-                
-                alert("金額已強制更新至雲端！");
-                syncToCloud(); 
-            }
-        });
-    </script>
-</body>
-</html>
+                    // 設定金幣掉落的終點 (撲滿內部) 和逐漸變透明
+                    coin.
