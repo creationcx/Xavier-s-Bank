@@ -38,7 +38,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            position: relative; /* 為了讓金幣能準確定位 */
+            position: relative;
         }
 
         .piggy-bank.spend { border-color: var(--spend-color); }
@@ -94,7 +94,6 @@
         .alloc-input { width: 40px; }
         .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; }
 
-        /* 金幣掉落動畫元素 */
         .falling-coin {
             position: fixed;
             font-size: 35px;
@@ -114,7 +113,7 @@
 </head>
 <body>
 
-    <h1>🎈 噗噗的理財撲滿 🎈</h1>
+    <h1>🪙 噗噗的理財撲滿 🪙</h1>
 
     <div class="banks-container">
         <div class="piggy-bank spend" id="bank-spend">
@@ -180,9 +179,11 @@
     <button class="admin-trigger" id="btn-admin"></button>
 
     <script type="module">
+        // 注意看這裡！我們保留了有 https 的網址，這才能讓瀏覽器讀懂！
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
+        // 這邊使用的是你剛才貼上來的專屬設定碼
         const firebaseConfig = {
             apiKey: "AIzaSyBkd-KKJZ-lQjWmg1b3TumwOJ8OEl21N5w",
             authDomain: "xavier-s-bank.firebaseapp.com",
@@ -190,7 +191,8 @@
             projectId: "xavier-s-bank",
             storageBucket: "xavier-s-bank.firebasestorage.app",
             messagingSenderId: "804735399947",
-            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e"
+            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e",
+            measurementId: "G-VY3EDKPVVZ"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -209,10 +211,8 @@
             set(dbRef, balances);
         }
 
-        // 判斷是否為每個月的第一個星期六
         function isFirstSaturday() {
             const today = new Date();
-            // getDay() 0是日, 1是一... 6是六。 且日期必須在 1~7 號之間
             return today.getDay() === 6 && today.getDate() <= 7;
         }
 
@@ -249,7 +249,6 @@
             renderCoins('coins-invest', balances.invest);
         }
 
-        // 存錢動畫邏輯
         function triggerCoinAnimation(s, sa, i, callback) {
             const targets = [
                 { val: s, id: 'bank-spend' },
@@ -268,12 +267,147 @@
                     const coin = document.createElement('div');
                     coin.className = 'falling-coin';
                     coin.innerText = '💰';
-                    // 讓金幣從撲滿的正上方掉下來
                     coin.style.left = (rect.left + rect.width / 2 - 17) + "px"; 
                     document.body.appendChild(coin);
 
-                    // 觸發重繪以啟動動畫
                     void coin.offsetWidth; 
 
-                    // 設定金幣掉落的終點 (撲滿內部) 和逐漸變透明
-                    coin.
+                    coin.style.top = (rect.top + 30) + "px";
+                    coin.style.opacity = "0.2";
+
+                    setTimeout(() => {
+                        coin.remove();
+                        animationsRunning--;
+                        if (animationsRunning === 0) callback();
+                    }, 800);
+                }
+            });
+
+            if (animationsRunning === 0) callback();
+        }
+
+        document.getElementById('btn-deposit').addEventListener('click', () => {
+            let s = parseInt(document.getElementById('alloc-spend').value) || 0;
+            let sa = parseInt(document.getElementById('alloc-save').value) || 0;
+            let i = parseInt(document.getElementById('alloc-invest').value) || 0;
+
+            if (s + sa + i !== 15) { alert("總和必須剛好是 15 元喔！"); return; }
+
+            let password = prompt("請輸入家長確認密碼:");
+            if (password === "0215") {
+                triggerCoinAnimation(s, sa, i, () => {
+                    balances.spend += s; 
+                    balances.save += sa; 
+                    balances.invest += i;
+                    balances.diceRolledThisWeek = false; 
+                    document.getElementById('dice-display').innerText = "🎲";
+                    document.getElementById('dice-result').innerText = "";
+                    syncToCloud(); 
+                });
+            } else if (password !== null) alert("密碼錯誤！");
+        });
+
+        document.getElementById('btn-transfer').addEventListener('click', () => {
+            const from = document.getElementById('transfer-from').value;
+            const to = document.getElementById('transfer-to').value;
+            const amt = parseInt(document.getElementById('transfer-amt').value) || 0;
+
+            if (from === to) {
+                alert("同一個罐子不能互轉喔！");
+                return;
+            }
+            if (amt <= 0) {
+                alert("轉帳金額必須大於 0 元！");
+                return;
+            }
+            if (balances[from] < amt) {
+                alert("那個罐子裡的錢不夠轉出喔！");
+                return;
+            }
+
+            if (from === 'save' && !isFirstSaturday()) {
+                alert("🔒 儲蓄帳的錢只能在每個月的「第一個星期六」轉出喔！還沒到解鎖時間！");
+                return;
+            }
+
+            balances[from] -= amt;
+            balances[to] += amt;
+            alert(`成功將 ${amt} 元轉移！`);
+            syncToCloud();
+            document.getElementById('transfer-amt').value = ''; 
+        });
+
+        document.getElementById('roll-btn').addEventListener('click', () => {
+            if (balances.diceRolledThisWeek) {
+                alert("這週已經擲過骰子囉！"); return;
+            }
+            const diceDisplay = document.getElementById('dice-display');
+            const resultText = document.getElementById('dice-result');
+            const rollBtn = document.getElementById('roll-btn');
+            
+            diceDisplay.classList.add('spin');
+            rollBtn.disabled = true;
+            resultText.innerText = "轉動中...";
+
+            setTimeout(() => {
+                diceDisplay.classList.remove('spin');
+                const roll = Math.floor(Math.random() * 6) + 1;
+                let outcomeMsg = "";
+                let change = 0;
+
+                if (roll === 6) { 
+                    diceDisplay.innerText = "🌺"; 
+                    change = -Math.ceil(balances.invest / 5);
+                    outcomeMsg = `遇到食人花！共損失 ${Math.abs(change)} 元。`;
+                } else {
+                    diceDisplay.innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][roll-1];
+                    if (roll === 4) {
+                        change = Math.ceil(balances.invest / 5);
+                        outcomeMsg = `點數 4！共增加 ${change} 元。`;
+                    } else if (roll === 5) {
+                        change = Math.ceil(balances.invest / 2);
+                        outcomeMsg = `點數 5！大豐收，增加 ${change} 元！`;
+                    } else {
+                        outcomeMsg = `點數 ${roll}，本週平平安安。`;
+                    }
+                }
+
+                balances.invest += change;
+                if (balances.invest < 0) balances.invest = 0; 
+                
+                balances.diceRolledThisWeek = true;
+                resultText.innerText = outcomeMsg;
+                
+                syncToCloud(); 
+                rollBtn.disabled = false;
+            }, 1000);
+        });
+
+        document.getElementById('btn-interest').addEventListener('click', () => {
+            let password = prompt("請輸入密碼以發放利息:");
+            if (password === "0215") {
+                let interest = Math.ceil(balances.save / 5);
+                balances.save += interest;
+                alert(`發放利息！共獲得 ${interest} 元利息。`);
+                syncToCloud(); 
+            } else if (password !== null) alert("密碼錯誤！");
+        });
+
+        document.getElementById('btn-admin').addEventListener('click', () => {
+            let pwd = prompt("進入後台管理，請輸入密碼:");
+            if (pwd === "0215") {
+                let newSpend = prompt("設定 [消費帳] 金額:", balances.spend);
+                let newSave = prompt("設定 [儲蓄帳] 金額:", balances.save);
+                let newInvest = prompt("設定 [投資帳] 金額:", balances.invest);
+                
+                if(newSpend !== null) balances.spend = parseInt(newSpend) || 0;
+                if(newSave !== null) balances.save = parseInt(newSave) || 0;
+                if(newInvest !== null) balances.invest = parseInt(newInvest) || 0;
+                
+                alert("金額已強制更新至雲端！");
+                syncToCloud(); 
+            }
+        });
+    </script>
+</body>
+</html>
