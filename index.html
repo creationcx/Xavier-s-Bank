@@ -37,81 +37,14 @@
         .piggy-bank h3 { margin: 5px 0; font-size: 1.1em; color: var(--text-color); font-weight: bold; }
         .amount { font-size: 1.3em; font-weight: bold; color: var(--highlight-color); }
 
-        .money-container { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; width: 100%; min-height: 60px; max-height: 120px; overflow-y: auto; margin-top: 10px; padding: 5px; background: rgba(107, 91, 90, 0.04); border-radius: 10px; gap: 2px; }
+        .money-container { display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; width: 100%; min-height: 60px; max-height: 120px; overflow-y: auto; margin-top: 10px; gap: 3px; padding: 5px; background: rgba(107, 91, 90, 0.04); border-radius: 10px; }
         
         /* 新增：將同面額包裝在一起的小氣泡 */
         .money-group { display: inline-flex; align-items: center; background: rgba(255, 255, 255, 0.7); border-radius: 12px; padding: 3px 6px; margin: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .money-count { font-size: 0.9em; margin-left: 4px; color: var(--text-color); font-weight: bold; }
 
-        /* 硬幣與鈔票樣式 */
+        /* 硬幣樣式 */
         .coin-visual { border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; box-shadow: inset 0 0 3px rgba(255,255,255,0.5), 1px 1px 3px rgba(0,0,0,0.2); }
-        .c-50 { width: 24px; height: 24px; background: radial-gradient(circle, #E8C382, #CBA358); color: #7A5C24; }
-        .c-10 { width: 20px; height: 20px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
-        .c-5 { width: 18px; height: 18px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
-        .c-1 { width: 14px; height: 14px; background: radial-gradient(circle, #C89F82, #A67B5E); color: #FFF; font-size: 8px; }
-
-        .bill-visual { border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4); }
-        .b-1000 { width: 38px; height: 20px; background: linear-gradient(135deg, #4B79A1, #283E51); color: #FFF; }
-        .b-500 { width: 36px; height: 20px; background: linear-gradient(135deg, #8A6A4B, #5C4332); color: #FFF; }
-        .b-100 { width: 34px; height: 20px; background: linear-gradient(135deg, #D35400, #A04000); color: #FFF; }
-
-        .action-panel { background: rgba(255, 255, 255, 0.7); border-radius: 20px; padding: 15px; margin: 15px auto; max-width: 600px; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.05); }
-        .action-panel h2 { color: var(--highlight-color); }
-        button { background-color: var(--btn-color); border: none; border-radius: 8px; padding: 8px 15px; font-size: 1.1em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; font-family: inherit; }
-        button:hover { background-color: var(--btn-hover); }
-        button:disabled { background-color: #ccc; cursor: not-allowed; } 
-        
-        .dice-emoji { font-size: 2.5em; display: inline-block; }
-        .spin { animation: spin 0.5s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .input-group { margin: 10px 0; color: var(--text-color); font-weight: bold; }
-        input[type="number"], select { font-family: inherit; font-size: 1em; padding: 5px; border-radius: 5px; border: 1px solid #D4B2A7; text-align: center; color: var(--text-color); background-color: #FFFBF9; }
-        .alloc-input { width: 40px; }
-        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; z-index: 100; }
-        .falling-coin { position: fixed; font-size: 35px; z-index: 1000; top: -50px; transition: top 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.8s; pointer-events: none; }
-
-        @media (max-width: 400px) { .bank-icon { font-size: 2em; } .piggy-bank h3 { font-size: 0.9em; } .amount { font-size: 1.1em; } button { font-size: 1em; padding: 6px 12px; } }
-    </style>
-</head>
-<body>
-
-    <div class="bank-name">Xaviers Bank</div>
-    <h1>🪙 噗噗的理財撲滿 🪙</h1>
-
-    <div class="banks-container">
-        <div class="piggy-bank spend" id="bank-spend">
-            <div class="bank-icon">🛍️</div>
-            <h3>消費帳</h3>
-            <div class="amount" id="amt-spend">讀取中</div>
-            <div class="money-container" id="money-spend"></div>
-        </div>
-        <div class="piggy-bank save" id="bank-save">
-            <div class="bank-icon">🏦</div>
-            <h3>儲蓄帳</h3>
-            <div class="amount" id="amt-save">讀取中</div>
-            <div class="money-container" id="money-save"></div>
-            <button id="btn-interest" style="font-size: 0.75em; padding: 5px; margin-top:10px;">月初領息</button>
-        </div>
-        <div class="piggy-bank invest" id="bank-invest">
-            <div class="bank-icon">📈</div>
-            <h3>投資帳</h3>
-            <div class="amount" id="amt-invest">讀取中</div>
-            <div class="money-container" id="money-invest"></div>
-        </div>
-    </div>
-
-    <div class="action-panel">
-        <h2>💰 發零用錢 (15元)</h2>
-        <div class="input-group">
-            🛍️ <input type="number" id="alloc-spend" class="alloc-input" min="0" max="15" value="5">
-            🏦 <input type="number" id="alloc-save" class="alloc-input" min="0" max="15" value="5">
-            📈 <input type="number" id="alloc-invest" class="alloc-input" min="0" max="15" value="5">
-        </div>
-        <button id="btn-deposit" style="background-color: var(--invest-color);">家長確認存入</button>
-    </div>
-
-    <div class="action-panel">
-        <h2>🎲 每週六投資挑戰</h2>
-        <div>
-            <div class="dice-emoji" id="dice-display">🎲</div><br>
-            <button id="roll-btn">擲骰子</button>
+        .c-50 { width: 28px; height: 28px; background: radial-gradient(circle, #E8C382, #CBA358); color: #7A5C24; }
+        .c-10 { width: 24px; height: 24px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
+        .c-5 { width:
