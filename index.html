@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>噗噗的理財撲滿</title>
+    <title>Xaviers Bank - 噗噗的理財撲滿</title>
     <style>
         :root {
             --bg-color: #F7EBE8; 
@@ -17,63 +17,22 @@
         }
 
         body { font-family: 'Comic Sans MS', '微軟正黑體', sans-serif; background-color: var(--bg-color); color: var(--text-color); text-align: center; padding: 10px; margin: 0; }
+        
+        /* 新增：頂部銀行名稱樣式 */
+        .bank-name { color: #8A7270; font-size: 1.2em; font-weight: bold; letter-spacing: 2px; margin-top: 15px; margin-bottom: -5px; }
         h1 { color: var(--highlight-color); font-size: 2em; text-shadow: 1px 1px 3px rgba(0,0,0,0.05); margin-top: 10px; }
         
-        .banks-container { 
-            display: flex; 
-            justify-content: space-between; 
-            margin: 20px 0; 
-            flex-wrap: nowrap; 
-            gap: 5px;
-        }
-        
-        .piggy-bank { 
-            background: white; 
-            border-radius: 15px; 
-            padding: 10px 5px; 
-            width: 32%; 
-            box-sizing: border-box;
-            box-shadow: 0 5px 15px rgba(167, 116, 120, 0.08); 
-            border: 3px dashed #ccc; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-        }
-
+        .banks-container { display: flex; justify-content: space-between; margin: 20px 0; flex-wrap: nowrap; gap: 5px; }
+        .piggy-bank { background: white; border-radius: 15px; padding: 10px 5px; width: 32%; box-sizing: border-box; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.08); border: 3px dashed #ccc; display: flex; flex-direction: column; align-items: center; position: relative; }
         .piggy-bank.spend { border-color: var(--spend-color); }
         .piggy-bank.save { border-color: var(--save-color); }
         .piggy-bank.invest { border-color: var(--invest-color); }
-        
         .bank-icon { font-size: 2.5em; margin-bottom: 5px; }
         .piggy-bank h3 { margin: 5px 0; font-size: 1.1em; color: var(--text-color); }
         .amount { font-size: 1.3em; font-weight: bold; color: var(--highlight-color); }
 
-        .coins-container {
-            display: flex;
-            flex-wrap: wrap-reverse;
-            justify-content: center;
-            align-content: flex-start;
-            width: 100%;
-            min-height: 60px;
-            max-height: 120px;
-            overflow-y: auto;
-            margin-top: 10px;
-            gap: 2px;
-            padding: 5px;
-            background: rgba(107, 91, 90, 0.04); 
-            border-radius: 10px;
-        }
-
-        .coin-visual {
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            font-weight: bold;
-            box-shadow: inset 0 0 3px rgba(255,255,255,0.5), 1px 1px 3px rgba(0,0,0,0.2);
-        }
+        .coins-container { display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-start; width: 100%; min-height: 60px; max-height: 120px; overflow-y: auto; margin-top: 10px; gap: 2px; padding: 5px; background: rgba(107, 91, 90, 0.04); border-radius: 10px; }
+        .coin-visual { border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; box-shadow: inset 0 0 3px rgba(255,255,255,0.5), 1px 1px 3px rgba(0,0,0,0.2); }
         .c-50 { width: 28px; height: 28px; background: radial-gradient(circle, #E8C382, #CBA358); color: #7A5C24; }
         .c-10 { width: 24px; height: 24px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
         .c-5 { width: 20px; height: 20px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
@@ -81,38 +40,23 @@
 
         .action-panel { background: rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 15px; margin: 15px auto; max-width: 600px; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.05); }
         .action-panel h2 { color: var(--highlight-color); }
-        
         button { background-color: var(--btn-color); border: none; border-radius: 8px; padding: 8px 15px; font-size: 1.1em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
         button:hover { background-color: var(--btn-hover); }
-        
         .dice-emoji { font-size: 2.5em; display: inline-block; }
         .spin { animation: spin 0.5s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        
         .input-group { margin: 10px 0; color: var(--text-color); font-weight: bold; }
         input[type="number"], select { font-size: 1em; padding: 5px; border-radius: 5px; border: 1px solid #D4B2A7; text-align: center; color: var(--text-color); background-color: #FFFBF9; }
         .alloc-input { width: 40px; }
         .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; }
+        .falling-coin { position: fixed; font-size: 35px; z-index: 1000; top: -50px; transition: top 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.8s; pointer-events: none; }
 
-        .falling-coin {
-            position: fixed;
-            font-size: 35px;
-            z-index: 1000;
-            top: -50px;
-            transition: top 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.8s;
-            pointer-events: none;
-        }
-
-        @media (max-width: 400px) {
-            .bank-icon { font-size: 2em; }
-            .piggy-bank h3 { font-size: 0.9em; }
-            .amount { font-size: 1.1em; }
-            button { font-size: 1em; padding: 6px 12px; }
-        }
+        @media (max-width: 400px) { .bank-icon { font-size: 2em; } .piggy-bank h3 { font-size: 0.9em; } .amount { font-size: 1.1em; } button { font-size: 1em; padding: 6px 12px; } }
     </style>
 </head>
 <body>
 
+    <div class="bank-name">Xaviers Bank</div>
     <h1>🪙 噗噗的理財撲滿 🪙</h1>
 
     <div class="banks-container">
@@ -179,11 +123,10 @@
     <button class="admin-trigger" id="btn-admin"></button>
 
     <script type="module">
-        // 注意看這裡！我們保留了有 https 的網址，這才能讓瀏覽器讀懂！
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // 這邊使用的是你剛才貼上來的專屬設定碼
+        // 你的 Firebase 金鑰
         const firebaseConfig = {
             apiKey: "AIzaSyBkd-KKJZ-lQjWmg1b3TumwOJ8OEl21N5w",
             authDomain: "xavier-s-bank.firebaseapp.com",
@@ -191,8 +134,7 @@
             projectId: "xavier-s-bank",
             storageBucket: "xavier-s-bank.firebasestorage.app",
             messagingSenderId: "804735399947",
-            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e",
-            measurementId: "G-VY3EDKPVVZ"
+            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -312,18 +254,9 @@
             const to = document.getElementById('transfer-to').value;
             const amt = parseInt(document.getElementById('transfer-amt').value) || 0;
 
-            if (from === to) {
-                alert("同一個罐子不能互轉喔！");
-                return;
-            }
-            if (amt <= 0) {
-                alert("轉帳金額必須大於 0 元！");
-                return;
-            }
-            if (balances[from] < amt) {
-                alert("那個罐子裡的錢不夠轉出喔！");
-                return;
-            }
+            if (from === to) { alert("同一個罐子不能互轉喔！"); return; }
+            if (amt <= 0) { alert("轉帳金額必須大於 0 元！"); return; }
+            if (balances[from] < amt) { alert("那個罐子裡的錢不夠轉出喔！"); return; }
 
             if (from === 'save' && !isFirstSaturday()) {
                 alert("🔒 儲蓄帳的錢只能在每個月的「第一個星期六」轉出喔！還沒到解鎖時間！");
@@ -338,9 +271,7 @@
         });
 
         document.getElementById('roll-btn').addEventListener('click', () => {
-            if (balances.diceRolledThisWeek) {
-                alert("這週已經擲過骰子囉！"); return;
-            }
+            if (balances.diceRolledThisWeek) { alert("這週已經擲過骰子囉！"); return; }
             const diceDisplay = document.getElementById('dice-display');
             const resultText = document.getElementById('dice-result');
             const rollBtn = document.getElementById('roll-btn');
