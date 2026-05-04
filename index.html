@@ -17,11 +17,8 @@
         }
 
         body { 
-            font-family: 'Comic Sans MS', '微軟正黑體', sans-serif; 
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'HanziPen TC', 'Yuppy TC', 'cwTeXYen', '微軟正黑體', sans-serif; 
             background-color: var(--bg-color); 
-            /* 新增：手繪風塗鴉背景圖 (SVG data URI，輕量且清晰) */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill="%23A77478" fill-opacity="0.05"><path d="M11 18c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM3 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM15 10c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM8 4c1.1 0 2-.9 2-2S9.1 0 8 0 6 .9 6 2s.9 2 2 2z"/><path d="M96 15c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM88 10c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM96 5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/><path d="M19.4 80.6l-2.8-2.8c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l2.8 2.8c.2.2.5.3.7.3s.5-.1.7-.3c.4-.4.4-1 0-1.4zM24 77c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM15 88c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/><path d="M85 85l-4-4c-.4-.4-1-.4-1.4 0s-.4 1 0 1.4l4 4c.2.2.5.3.7.3s.5-.1.7-.3c.4-.4.4-1 0-1.4zM90 80c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/><path d="M50 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill-opacity="0.1"/><path d="M10 50a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill-opacity="0.1"/><path d="M90 50a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill-opacity="0.1"/><path d="M50 90a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" fill-opacity="0.1"/><path d="M75 25c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill-opacity="0.1"/><path d="M25 25c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill-opacity="0.1"/><path d="M75 75c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill-opacity="0.1"/><path d="M25 75c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" fill-opacity="0.1"/></g></svg>');
-            background-attachment: fixed; /* 讓背景固定，滾動時更有層次感 */
             color: var(--text-color); 
             text-align: center; 
             padding: 10px; 
@@ -32,32 +29,40 @@
         h1 { color: var(--highlight-color); font-size: 2em; text-shadow: 1px 1px 3px rgba(0,0,0,0.05); margin-top: 10px; }
         
         .banks-container { display: flex; justify-content: space-between; margin: 20px 0; flex-wrap: nowrap; gap: 5px; }
-        .piggy-bank { background: rgba(255, 255, 255, 0.9); /* 稍微透明，透出背景圖 */ border-radius: 15px; padding: 10px 5px; width: 32%; box-sizing: border-box; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.08); border: 3px dashed #ccc; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .piggy-bank { background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 10px 5px; width: 32%; box-sizing: border-box; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.08); border: 3px dashed #ccc; display: flex; flex-direction: column; align-items: center; position: relative; }
         .piggy-bank.spend { border-color: var(--spend-color); }
         .piggy-bank.save { border-color: var(--save-color); }
         .piggy-bank.invest { border-color: var(--invest-color); }
         .bank-icon { font-size: 2.5em; margin-bottom: 5px; }
-        .piggy-bank h3 { margin: 5px 0; font-size: 1.1em; color: var(--text-color); }
+        .piggy-bank h3 { margin: 5px 0; font-size: 1.1em; color: var(--text-color); font-weight: bold; }
         .amount { font-size: 1.3em; font-weight: bold; color: var(--highlight-color); }
 
-        .coins-container { display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-start; width: 100%; min-height: 60px; max-height: 120px; overflow-y: auto; margin-top: 10px; gap: 2px; padding: 5px; background: rgba(107, 91, 90, 0.04); border-radius: 10px; }
+        .money-container { display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-start; width: 100%; min-height: 60px; max-height: 120px; overflow-y: auto; margin-top: 10px; gap: 3px; padding: 5px; background: rgba(107, 91, 90, 0.04); border-radius: 10px; }
+        
+        /* 硬幣樣式 */
         .coin-visual { border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 10px; font-weight: bold; box-shadow: inset 0 0 3px rgba(255,255,255,0.5), 1px 1px 3px rgba(0,0,0,0.2); }
         .c-50 { width: 28px; height: 28px; background: radial-gradient(circle, #E8C382, #CBA358); color: #7A5C24; }
         .c-10 { width: 24px; height: 24px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
         .c-5 { width: 20px; height: 20px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
         .c-1 { width: 16px; height: 16px; background: radial-gradient(circle, #C89F82, #A67B5E); color: #FFF; font-size: 8px; }
 
+        /* 鈔票樣式 */
+        .bill-visual { border-radius: 4px; display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; box-shadow: 1px 1px 3px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.4); }
+        .b-1000 { width: 45px; height: 22px; background: linear-gradient(135deg, #4B79A1, #283E51); color: #FFF; }
+        .b-500 { width: 42px; height: 22px; background: linear-gradient(135deg, #8A6A4B, #5C4332); color: #FFF; }
+        .b-100 { width: 40px; height: 22px; background: linear-gradient(135deg, #D35400, #A04000); color: #FFF; }
+
         .action-panel { background: rgba(255, 255, 255, 0.7); border-radius: 20px; padding: 15px; margin: 15px auto; max-width: 600px; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.05); }
         .action-panel h2 { color: var(--highlight-color); }
-        button { background-color: var(--btn-color); border: none; border-radius: 8px; padding: 8px 15px; font-size: 1.1em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
+        button { background-color: var(--btn-color); border: none; border-radius: 8px; padding: 8px 15px; font-size: 1.1em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; font-family: inherit; }
         button:hover { background-color: var(--btn-hover); }
-        button:disabled { background-color: #ccc; cursor: not-allowed; } /* 禁用按鈕樣式 */
+        button:disabled { background-color: #ccc; cursor: not-allowed; } 
         
         .dice-emoji { font-size: 2.5em; display: inline-block; }
         .spin { animation: spin 0.5s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .input-group { margin: 10px 0; color: var(--text-color); font-weight: bold; }
-        input[type="number"], select { font-size: 1em; padding: 5px; border-radius: 5px; border: 1px solid #D4B2A7; text-align: center; color: var(--text-color); background-color: #FFFBF9; }
+        input[type="number"], select { font-family: inherit; font-size: 1em; padding: 5px; border-radius: 5px; border: 1px solid #D4B2A7; text-align: center; color: var(--text-color); background-color: #FFFBF9; }
         .alloc-input { width: 40px; }
         .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; z-index: 100; }
         .falling-coin { position: fixed; font-size: 35px; z-index: 1000; top: -50px; transition: top 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.8s; pointer-events: none; }
@@ -75,20 +80,20 @@
             <div class="bank-icon">🛍️</div>
             <h3>消費帳</h3>
             <div class="amount" id="amt-spend">讀取中</div>
-            <div class="coins-container" id="coins-spend"></div>
+            <div class="money-container" id="money-spend"></div>
         </div>
         <div class="piggy-bank save" id="bank-save">
             <div class="bank-icon">🏦</div>
             <h3>儲蓄帳</h3>
             <div class="amount" id="amt-save">讀取中</div>
-            <div class="coins-container" id="coins-save"></div>
+            <div class="money-container" id="money-save"></div>
             <button id="btn-interest" style="font-size: 0.75em; padding: 5px; margin-top:10px;">月初領息</button>
         </div>
         <div class="piggy-bank invest" id="bank-invest">
             <div class="bank-icon">📈</div>
             <h3>投資帳</h3>
             <div class="amount" id="amt-invest">讀取中</div>
-            <div class="coins-container" id="coins-invest"></div>
+            <div class="money-container" id="money-invest"></div>
         </div>
     </div>
 
@@ -137,7 +142,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // 你的 Firebase 金鑰
+        // Firebase 金鑰設定
         const firebaseConfig = {
             apiKey: "AIzaSyBkd-KKJZ-lQjWmg1b3TumwOJ8OEl21N5w",
             authDomain: "xavier-s-bank.firebaseapp.com",
@@ -145,7 +150,8 @@
             projectId: "xavier-s-bank",
             storageBucket: "xavier-s-bank.firebasestorage.app",
             messagingSenderId: "804735399947",
-            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e"
+            appId: "1:804735399947:web:fe1a82631a6bc40846ef0e",
+            measurementId: "G-VY3EDKPVVZ"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -169,27 +175,30 @@
             return today.getDay() === 6 && today.getDate() <= 7;
         }
 
-        function renderCoins(containerId, totalAmount) {
+        // 把金額轉換成鈔票與硬幣的函數
+        function renderMoney(containerId, totalAmount) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; 
             let remaining = totalAmount;
             
-            const coinTypes = [50, 10, 5, 1];
-            const coinsToDraw = [];
-
-            for (let val of coinTypes) {
+            // 包含鈔票與硬幣的面額
+            const moneyTypes = [1000, 500, 100, 50, 10, 5, 1];
+            
+            for (let val of moneyTypes) {
                 while (remaining >= val) {
-                    coinsToDraw.push(val);
+                    const el = document.createElement('div');
+                    if (val >= 100) {
+                        // 100以上的套用鈔票樣式
+                        el.className = `bill-visual b-${val}`;
+                    } else {
+                        // 100以下的套用硬幣樣式
+                        el.className = `coin-visual c-${val}`;
+                    }
+                    el.innerText = val;
+                    container.appendChild(el);
                     remaining -= val;
                 }
             }
-
-            coinsToDraw.forEach(val => {
-                const c = document.createElement('div');
-                c.className = `coin-visual c-${val}`;
-                c.innerText = val;
-                container.appendChild(c);
-            });
         }
 
         function updateUI() {
@@ -197,11 +206,11 @@
             document.getElementById('amt-save').innerText = `${balances.save} 元`;
             document.getElementById('amt-invest').innerText = `${balances.invest} 元`;
             
-            renderCoins('coins-spend', balances.spend);
-            renderCoins('coins-save', balances.save);
-            renderCoins('coins-invest', balances.invest);
+            // 重新渲染鈔票與硬幣
+            renderMoney('money-spend', balances.spend);
+            renderMoney('money-save', balances.save);
+            renderMoney('money-invest', balances.invest);
             
-            // 根據骰子狀態更新按鈕顯示
             const rollBtn = document.getElementById('roll-btn');
             const resultText = document.getElementById('dice-result');
             if (balances.diceRolledThisWeek) {
@@ -266,7 +275,6 @@
                     balances.spend += s; 
                     balances.save += sa; 
                     balances.invest += i;
-                    // 存入零用錢時，重置骰子狀態給新的一週
                     balances.diceRolledThisWeek = false; 
                     document.getElementById('dice-display').innerText = "🎲";
                     document.getElementById('dice-result').innerText = "";
@@ -297,7 +305,7 @@
         });
 
         document.getElementById('roll-btn').addEventListener('click', () => {
-            if (balances.diceRolledThisWeek) { return; } // 防止按鈕禁用失效
+            if (balances.diceRolledThisWeek) { return; } 
             
             const diceDisplay = document.getElementById('dice-display');
             const resultText = document.getElementById('dice-result');
@@ -337,7 +345,6 @@
                 resultText.innerText = outcomeMsg;
                 
                 syncToCloud(); 
-                // updateUI 會自動禁用按鈕
             }, 1000);
         });
 
@@ -354,11 +361,10 @@
         document.getElementById('btn-admin').addEventListener('click', () => {
             let pwd = prompt("進入管理模式，請輸入密碼:");
             if (pwd === "0215") {
-                // 修改管理介面，加入重置骰子按鈕
-                const action = confirm("您想做什麼？\n[確定]：設定罐子金額\n[取消]：🛠️重置本週骰子狀態");
+                // 修改：使用更合乎邏輯的數字選單
+                const action = prompt("🛠️ 管理員模式\n請輸入數字選擇要執行的功能：\n1. 強制設定罐子金額\n2. 重置本週骰子狀態");
                 
-                if (action) {
-                    // 原本的設定金額邏輯
+                if (action === "1") {
                     let newSpend = prompt("設定 [消費帳] 金額:", balances.spend);
                     let newSave = prompt("設定 [儲蓄帳] 金額:", balances.save);
                     let newInvest = prompt("設定 [投資帳] 金額:", balances.invest);
@@ -369,13 +375,14 @@
                     
                     alert("金額已強制更新至雲端！");
                     syncToCloud();
-                } else {
-                    // 新增的重置骰子邏輯
+                } else if (action === "2") {
                     balances.diceRolledThisWeek = false;
                     document.getElementById('dice-display').innerText = "🎲";
                     document.getElementById('dice-result').innerText = "";
                     alert("🛠️ 骰子挑戰狀態已重置！您可以再次測試擲骰子了。");
                     syncToCloud();
+                } else if (action !== null) {
+                    alert("無效的選擇，請輸入 1 或 2！");
                 }
             } else if (pwd !== null) {
                 alert("密碼錯誤！");
