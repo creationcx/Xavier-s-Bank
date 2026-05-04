@@ -6,78 +6,165 @@
     <title>噗噗的理財撲滿</title>
     <style>
         :root {
-            --bg-color: #FFF8E7;
-            --text-color: #5C4033;
-            --btn-color: #FFB6C1;
-            --btn-hover: #FF69B4;
-            --spend-color: #ADD8E6;
-            --save-color: #98FB98;
-            --invest-color: #FFD700;
+            /* 主題配色：奶茶與玫瑰粉 */
+            --bg-color: #F7EBE8; 
+            --text-color: #6B5B5A; 
+            --btn-color: #D9A0A7; 
+            --btn-hover: #C2878E; 
+            --spend-color: #D9A0A7; 
+            --save-color: #D4B2A7; 
+            --invest-color: #C69F97; 
+            --highlight-color: #A77478; 
         }
 
-        body { font-family: 'Comic Sans MS', '微軟正黑體', sans-serif; background-color: var(--bg-color); color: var(--text-color); text-align: center; padding: 20px; margin: 0; }
-        h1 { color: #d2691e; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
-        .banks-container { display: flex; justify-content: space-around; margin: 30px 0; flex-wrap: wrap; }
-        .piggy-bank { background: white; border-radius: 20px; padding: 20px; width: 25%; min-width: 120px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); position: relative; border: 3px dashed #ccc; }
+        body { font-family: 'Comic Sans MS', '微軟正黑體', sans-serif; background-color: var(--bg-color); color: var(--text-color); text-align: center; padding: 10px; margin: 0; }
+        h1 { color: var(--highlight-color); font-size: 2em; text-shadow: 1px 1px 3px rgba(0,0,0,0.05); margin-top: 10px; }
+        
+        .banks-container { 
+            display: flex; 
+            justify-content: space-between; 
+            margin: 20px 0; 
+            flex-wrap: nowrap; 
+            gap: 5px;
+        }
+        
+        .piggy-bank { 
+            background: white; 
+            border-radius: 15px; 
+            padding: 10px 5px; 
+            width: 32%; 
+            box-sizing: border-box;
+            box-shadow: 0 5px 15px rgba(167, 116, 120, 0.08); 
+            border: 3px dashed #ccc; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .piggy-bank.spend { border-color: var(--spend-color); }
         .piggy-bank.save { border-color: var(--save-color); }
         .piggy-bank.invest { border-color: var(--invest-color); }
-        .bank-icon { font-size: 3em; margin-bottom: 10px; }
-        .amount { font-size: 1.5em; font-weight: bold; color: #d2691e; }
-        .action-panel { background: rgba(255, 255, 255, 0.7); border-radius: 20px; padding: 20px; margin: 20px auto; max-width: 600px; box-shadow: 0 5px 10px rgba(0,0,0,0.05); }
-        button { background-color: var(--btn-color); border: none; border-radius: 10px; padding: 10px 20px; font-size: 1.2em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
+        
+        .bank-icon { font-size: 2.5em; margin-bottom: 5px; }
+        .piggy-bank h3 { margin: 5px 0; font-size: 1.1em; color: var(--text-color); }
+        .amount { font-size: 1.3em; font-weight: bold; color: var(--highlight-color); }
+
+        .coins-container {
+            display: flex;
+            flex-wrap: wrap-reverse;
+            justify-content: center;
+            align-content: flex-start;
+            width: 100%;
+            min-height: 60px;
+            max-height: 120px;
+            overflow-y: auto;
+            margin-top: 10px;
+            gap: 2px;
+            padding: 5px;
+            background: rgba(107, 91, 90, 0.04); 
+            border-radius: 10px;
+        }
+
+        .coin-visual {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: inset 0 0 3px rgba(255,255,255,0.5), 1px 1px 3px rgba(0,0,0,0.2);
+        }
+        .c-50 { width: 28px; height: 28px; background: radial-gradient(circle, #E8C382, #CBA358); color: #7A5C24; }
+        .c-10 { width: 24px; height: 24px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
+        .c-5 { width: 20px; height: 20px; background: radial-gradient(circle, #EAEAEA, #BDBDBD); color: #555; }
+        .c-1 { width: 16px; height: 16px; background: radial-gradient(circle, #C89F82, #A67B5E); color: #FFF; font-size: 8px; }
+
+        .action-panel { background: rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 15px; margin: 15px auto; max-width: 600px; box-shadow: 0 5px 15px rgba(167, 116, 120, 0.05); }
+        .action-panel h2 { color: var(--highlight-color); }
+        
+        button { background-color: var(--btn-color); border: none; border-radius: 8px; padding: 8px 15px; font-size: 1.1em; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; margin: 5px; }
         button:hover { background-color: var(--btn-hover); }
-        .dice-area { margin: 20px 0; }
-        #dice-result { font-size: 1.5em; font-weight: bold; color: #e84118; margin-top: 10px; }
-        .dice-emoji { font-size: 3em; display: inline-block; }
+        
+        .dice-emoji { font-size: 2.5em; display: inline-block; }
         .spin { animation: spin 0.5s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .allocation-area input { width: 50px; font-size: 1.2em; text-align: center; border: 2px solid #ccc; border-radius: 5px; margin: 0 5px; }
-        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 20px; height: 20px; background: transparent; border: none; cursor: pointer; }
+        
+        .input-group { margin: 10px 0; color: var(--text-color); font-weight: bold; }
+        input[type="number"], select { font-size: 1em; padding: 5px; border-radius: 5px; border: 1px solid #D4B2A7; text-align: center; color: var(--text-color); background-color: #FFFBF9; }
+        .alloc-input { width: 40px; }
+        .admin-trigger { position: fixed; bottom: 10px; right: 10px; width: 30px; height: 30px; background: transparent; border: none; cursor: pointer; }
+
+        @media (max-width: 400px) {
+            .bank-icon { font-size: 2em; }
+            .piggy-bank h3 { font-size: 0.9em; }
+            .amount { font-size: 1.1em; }
+            button { font-size: 1em; padding: 6px 12px; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>🎈 噗噗的理財撲滿 🎈</h1>
+    <h1>🎈 小大人的理財撲滿 🎈</h1>
 
     <div class="banks-container">
         <div class="piggy-bank spend">
             <div class="bank-icon">🛍️</div>
             <h3>消費帳</h3>
-            <div class="amount" id="amt-spend">讀取中...</div>
+            <div class="amount" id="amt-spend">讀取中</div>
+            <div class="coins-container" id="coins-spend"></div>
         </div>
         <div class="piggy-bank save">
             <div class="bank-icon">🏦</div>
             <h3>儲蓄帳</h3>
-            <div class="amount" id="amt-save">讀取中...</div>
-            <button id="btn-interest" style="font-size: 0.8em; padding: 5px;">月初領息</button>
+            <div class="amount" id="amt-save">讀取中</div>
+            <div class="coins-container" id="coins-save"></div>
+            <button id="btn-interest" style="font-size: 0.75em; padding: 5px; margin-top:10px;">月初領息</button>
         </div>
         <div class="piggy-bank invest">
             <div class="bank-icon">📈</div>
             <h3>投資帳</h3>
-            <div class="amount" id="amt-invest">讀取中...</div>
+            <div class="amount" id="amt-invest">讀取中</div>
+            <div class="coins-container" id="coins-invest"></div>
         </div>
+    </div>
+
+    <div class="action-panel">
+        <h2>🔄 罐子互轉</h2>
+        <div class="input-group">
+            從 <select id="transfer-from">
+                <option value="spend">消費帳</option>
+                <option value="save">儲蓄帳</option>
+                <option value="invest">投資帳</option>
+            </select>
+            轉到 <select id="transfer-to">
+                <option value="save">儲蓄帳</option>
+                <option value="spend">消費帳</option>
+                <option value="invest">投資帳</option>
+            </select>
+        </div>
+        <div class="input-group">
+            金額: <input type="number" id="transfer-amt" min="1" style="width: 70px;"> 元
+        </div>
+        <button id="btn-transfer" style="background-color: var(--save-color);">確認轉出</button>
     </div>
 
     <div class="action-panel">
         <h2>🎲 每週六投資挑戰</h2>
-        <div class="dice-area">
-            <div class="dice-emoji" id="dice-display">🎲</div>
-            <br>
+        <div>
+            <div class="dice-emoji" id="dice-display">🎲</div><br>
             <button id="roll-btn">擲骰子</button>
-            <div id="dice-result"></div>
+            <div id="dice-result" style="color: var(--highlight-color); font-weight: bold; margin-top: 5px;"></div>
         </div>
     </div>
 
     <div class="action-panel">
-        <h2>💰 發放零用錢 (15元)</h2>
-        <p>請將 15 元分配到三個帳戶中：</p>
-        <div class="allocation-area">
-            🛍️ 消費: <input type="number" id="alloc-spend" min="0" max="15" value="5">
-            🏦 儲蓄: <input type="number" id="alloc-save" min="0" max="15" value="5">
-            📈 投資: <input type="number" id="alloc-invest" min="0" max="15" value="5">
+        <h2>💰 發零用錢 (15元)</h2>
+        <div class="input-group">
+            🛍️ <input type="number" id="alloc-spend" class="alloc-input" min="0" max="15" value="5">
+            🏦 <input type="number" id="alloc-save" class="alloc-input" min="0" max="15" value="5">
+            📈 <input type="number" id="alloc-invest" class="alloc-input" min="0" max="15" value="5">
         </div>
-        <button id="btn-deposit" style="margin-top: 15px; background-color: #32CD32;">家長確認存入</button>
+        <button id="btn-deposit" style="background-color: var(--invest-color);">家長確認存入</button>
     </div>
 
     <button class="admin-trigger" id="btn-admin"></button>
@@ -86,7 +173,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // 你專屬的 Firebase 設定
         const firebaseConfig = {
             apiKey: "AIzaSyBkd-KKJZ-lQjWmg1b3TumwOJ8OEl21N5w",
             authDomain: "xavier-s-bank.firebaseapp.com",
@@ -97,42 +183,84 @@
             appId: "1:804735399947:web:fe1a82631a6bc40846ef0e"
         };
 
-        // 初始化 Firebase 與資料庫
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const dbRef = ref(db, 'childFinance/');
 
-        // 預設資料結構
         let balances = { spend: 0, save: 0, invest: 0, diceRolledThisWeek: false };
 
-        // 監聽雲端資料變動 (達到即時連動效果)
         onValue(dbRef, (snapshot) => {
             const data = snapshot.val();
-            if (data) {
-                balances = data;
-            }
+            if (data) balances = data;
             updateUI();
         });
 
-        // 將新資料同步到雲端
         function syncToCloud() {
             set(dbRef, balances);
         }
 
-        // 更新畫面
+        function renderCoins(containerId, totalAmount) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; 
+            let remaining = totalAmount;
+            
+            const coinTypes = [50, 10, 5, 1];
+            const coinsToDraw = [];
+
+            for (let val of coinTypes) {
+                while (remaining >= val) {
+                    coinsToDraw.push(val);
+                    remaining -= val;
+                }
+            }
+
+            coinsToDraw.forEach(val => {
+                const c = document.createElement('div');
+                c.className = `coin-visual c-${val}`;
+                c.innerText = val;
+                container.appendChild(c);
+            });
+        }
+
         function updateUI() {
             document.getElementById('amt-spend').innerText = `${balances.spend} 元`;
             document.getElementById('amt-save').innerText = `${balances.save} 元`;
             document.getElementById('amt-invest').innerText = `${balances.invest} 元`;
+            
+            renderCoins('coins-spend', balances.spend);
+            renderCoins('coins-save', balances.save);
+            renderCoins('coins-invest', balances.invest);
         }
 
-        // 綁定按鈕事件
-        document.getElementById('roll-btn').addEventListener('click', () => {
-            if (balances.diceRolledThisWeek) {
-                alert("這週已經擲過骰子囉！");
+        document.getElementById('btn-transfer').addEventListener('click', () => {
+            const from = document.getElementById('transfer-from').value;
+            const to = document.getElementById('transfer-to').value;
+            const amt = parseInt(document.getElementById('transfer-amt').value) || 0;
+
+            if (from === to) {
+                alert("同一個罐子不能互轉喔！");
+                return;
+            }
+            if (amt <= 0) {
+                alert("轉帳金額必須大於 0 元！");
+                return;
+            }
+            if (balances[from] < amt) {
+                alert("那個罐子裡的錢不夠轉出喔！");
                 return;
             }
 
+            balances[from] -= amt;
+            balances[to] += amt;
+            alert(`成功將 ${amt} 元轉移！`);
+            syncToCloud();
+            document.getElementById('transfer-amt').value = ''; 
+        });
+
+        document.getElementById('roll-btn').addEventListener('click', () => {
+            if (balances.diceRolledThisWeek) {
+                alert("這週已經擲過骰子囉！"); return;
+            }
             const diceDisplay = document.getElementById('dice-display');
             const resultText = document.getElementById('dice-result');
             const rollBtn = document.getElementById('roll-btn');
@@ -150,17 +278,17 @@
                 if (roll === 6) { 
                     diceDisplay.innerText = "🌺"; 
                     change = -Math.ceil(balances.invest / 5);
-                    outcomeMsg = `遇到食人花！每 5 元損失 1 元，共損失 ${Math.abs(change)} 元。`;
+                    outcomeMsg = `遇到食人花！共損失 ${Math.abs(change)} 元。`;
                 } else {
                     diceDisplay.innerText = ["⚀","⚁","⚂","⚃","⚄","⚅"][roll-1];
                     if (roll === 4) {
                         change = Math.ceil(balances.invest / 5);
-                        outcomeMsg = `點數 4！每 5 元多 1 元，共增加 ${change} 元。`;
+                        outcomeMsg = `點數 4！共增加 ${change} 元。`;
                     } else if (roll === 5) {
                         change = Math.ceil(balances.invest / 2);
-                        outcomeMsg = `點數 5！每 2 元多 1 元，共增加 ${change} 元！大豐收！`;
+                        outcomeMsg = `點數 5！大豐收，增加 ${change} 元！`;
                     } else {
-                        outcomeMsg = `點數 ${roll}，本週無事發生，平平安安。`;
+                        outcomeMsg = `點數 ${roll}，本週平平安安。`;
                     }
                 }
 
@@ -170,21 +298,20 @@
                 balances.diceRolledThisWeek = true;
                 resultText.innerText = outcomeMsg;
                 
-                syncToCloud(); // 存回雲端
+                syncToCloud(); 
                 rollBtn.disabled = false;
             }, 1000);
         });
 
+        // 密碼驗證區塊更新為 0215，且不顯示提示文字
         document.getElementById('btn-interest').addEventListener('click', () => {
-            let password = prompt("請輸入家長密碼以發放利息 (預設: 0000):");
-            if (password === "0000") {
+            let password = prompt("請輸入密碼以發放利息:");
+            if (password === "0215") {
                 let interest = Math.ceil(balances.save / 5);
                 balances.save += interest;
-                alert(`發放利息！每 5 元增加 1 元，共獲得 ${interest} 元利息。`);
-                syncToCloud(); // 存回雲端
-            } else if (password !== null) {
-                alert("密碼錯誤！");
-            }
+                alert(`發放利息！共獲得 ${interest} 元利息。`);
+                syncToCloud(); 
+            } else if (password !== null) alert("密碼錯誤！");
         });
 
         document.getElementById('btn-deposit').addEventListener('click', () => {
@@ -192,31 +319,22 @@
             let sa = parseInt(document.getElementById('alloc-save').value) || 0;
             let i = parseInt(document.getElementById('alloc-invest').value) || 0;
 
-            if (s + sa + i !== 15) {
-                alert("三個帳戶的總和必須剛好是 15 元喔！");
-                return;
-            }
+            if (s + sa + i !== 15) { alert("總和必須剛好是 15 元喔！"); return; }
 
-            let password = prompt("請家長確認存入，請輸入密碼 (預設: 0000):");
-            if (password === "0000") {
-                balances.spend += s;
-                balances.save += sa;
-                balances.invest += i;
-                balances.diceRolledThisWeek = false; // 存入零用錢時，重置骰子狀態
-                
+            let password = prompt("請輸入家長確認密碼:");
+            if (password === "0215") {
+                balances.spend += s; balances.save += sa; balances.invest += i;
+                balances.diceRolledThisWeek = false; 
                 document.getElementById('dice-display').innerText = "🎲";
                 document.getElementById('dice-result').innerText = "";
-                
                 alert("✨ 存入成功！");
-                syncToCloud(); // 存回雲端
-            } else if (password !== null) {
-                alert("密碼錯誤！無法存入。");
-            }
+                syncToCloud(); 
+            } else if (password !== null) alert("密碼錯誤！");
         });
 
         document.getElementById('btn-admin').addEventListener('click', () => {
-            let pwd = prompt("進入後台管理，請輸入家長密碼 (預設: 0000):");
-            if (pwd === "0000") {
+            let pwd = prompt("進入後台管理，請輸入密碼:");
+            if (pwd === "0215") {
                 let newSpend = prompt("設定 [消費帳] 金額:", balances.spend);
                 let newSave = prompt("設定 [儲蓄帳] 金額:", balances.save);
                 let newInvest = prompt("設定 [投資帳] 金額:", balances.invest);
@@ -226,7 +344,7 @@
                 if(newInvest !== null) balances.invest = parseInt(newInvest) || 0;
                 
                 alert("金額已強制更新至雲端！");
-                syncToCloud(); // 存回雲端
+                syncToCloud(); 
             }
         });
     </script>
